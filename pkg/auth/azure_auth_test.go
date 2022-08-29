@@ -248,6 +248,30 @@ func TestGetMultiTenantServicePrincipalToken(t *testing.T) {
 	assert.Equal(t, multiTenantToken, spt)
 }
 
+func TestUsesMultiSubscriptionSameTenant(t *testing.T) {
+	config := &AzureAuthConfig{
+		TenantID:                      "TenantID",
+		AADClientID:                   "AADClientID",
+		AADClientSecret:               "AADClientSecret",
+		NetworkResourceTenantID:       "TenantID",
+		NetworkResourceSubscriptionID: "NetworkResourceSubscriptionID",
+	}
+
+	assert.Equal(t, config.UsesNetworkResourceInDifferentTenant(), false)
+	assert.Equal(t, config.UsesNetworkResourceInDifferentSubscription(), true)
+}
+
+func TestUsesMultiSubscriptionSameTenantNegative(t *testing.T) {
+	config := &AzureAuthConfig{
+		TenantID:        "TenantID",
+		AADClientID:     "AADClientID",
+		AADClientSecret: "AADClientSecret",
+	}
+
+	assert.Equal(t, config.UsesNetworkResourceInDifferentTenant(), false)
+	assert.Equal(t, config.UsesNetworkResourceInDifferentSubscription(), false)
+}
+
 func TestGetServicePrincipalTokenFromCertificate(t *testing.T) {
 	config := &AzureAuthConfig{
 		TenantID:              "TenantID",
